@@ -25,7 +25,10 @@ RUN pacman -Syq --needed --noconfirm base-devel git jshon mariadb \
 # Get Packer to help with installing from AUR
 RUN git clone https://github.com/keenerd/packer.git /opt/packer
 RUN chmod +x /opt/packer/packer
-RUN /opt/packer/packer -S --noedit --noconfirm drush
+
+# Install drush and php-codesniffer-drupal
+RUN /opt/packer/packer -S --noedit --noconfirm php-codesniffer-drupal drush
+
 # Set HOME and open_basedir so that drush doesn't complain
 ENV HOME /root
 RUN mkdir /root/.drush
@@ -39,17 +42,5 @@ EXPOSE 9000
 
 # Add script for running service
 ADD start_php_fpm.sh /opt/start_php_fpm.sh
-
-# Move root directory
-#RUN sed -i '/^;chdir/c \
-#chdir = /code/drupal' /etc/php/php-fpm.conf
-
-# Place the log location
-#RUN sed -i '/^;error_log/c \
-#error_log = /log/php-fpm.log' /etc/php/php-fpm.conf
-#RUN sed -i '/^;access.log/c \
-#access.log = /log/$pool.access.log' /etc/php/php-fpm.conf
-#RUN sed -i '/^;slowlog/c \
-#slowlog = log/$pool.log.slow' /etc/php/php-fpm.conf
 
 # vi: set tabstop=4 expandtab :
